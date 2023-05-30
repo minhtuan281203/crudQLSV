@@ -19,17 +19,20 @@
 
 <div class="khung">
   <h1>Student Manager</h1><br>
-  <a href="students?action=new" class="student_link">Add new Student</a>
 
-  <br><br>
-  <form method="get" action="students">
-    <input type="hidden" name="action" value="search">
-    <input type="text" name="searchItem" placeholder="Nhập tên sinh viên muốn tìm">
-    <button type="submit" class="btn-search">Tìm kiếm</button>
-  </form>
+  <div class="newSearch">
+    <a href="students?action=new" class="student_link">Add new Student</a>
+
+    <br><br>
+    <form method="get" action="students">
+      <input type="hidden" name="action" value="search">
+      <input type="text" name="searchItem" placeholder="Nhập tên sinh viên muốn tìm" class="ipSearch">
+      <button type="submit" class="btn-search">Tìm kiếm</button>
+    </form>
+  </div>
   <br>
   <table >
-    <tr>
+    <tr class="tr_first">
     <th>Id</th>
     <th>Name</th>
     <th>Age</th>
@@ -48,12 +51,11 @@
             <img src="${student.imageUrl}" alt="Student image" class="image-container">
         </td>
         <td>
-          <a style="text-decoration: none; padding: 10px; background-color: gray; color: #fff; margin-left: 6px;"
-             href="students?action=edit&id=${student.id}">
-              <span class="btn-sub">Edit</span></a>
+          <a style="text-decoration: none; padding: 10px; background-color: gray; color: #fff;"
+             href="students?action=edit&id=${student.id}">Edit</a>
           <a  style="text-decoration: none; padding: 10px; background-color: red; color: #fff;"
               href="students?action=delete&id=${student.id}"
-             onclick="return confirm('Are you sure you want to delete this student?')"><span class="btn-sub">Delete</span></a>
+             onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
         </td>
       </tr>
     </c:forEach>

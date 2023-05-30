@@ -69,7 +69,7 @@
 <%--            add new field--%>
             <tr>
               <td class="cot1"><label for="image2">Image:</label></td>
-              <td class="cot1"><input type="file" id="image2" name="image"></td>
+              <td class="cot1"><input type="file" id="image2" name="image" value="${student.imageUrl}"></td>
             </tr>
 
             <tr>
