@@ -6,8 +6,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +22,9 @@ public class StudentServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         studentList = new ArrayList<>();
-        studentList.add(new Student(1, "An", 20, "Ha Noi"));
-        studentList.add(new Student(2, "Bang", 21, "Ha Noi"));
-        studentList.add(new Student(3, "Cao", 20, "TP.HCM"));
+        studentList.add(new Student(1, "An", 20, "Ha Noi", "images/anh4.jpg"));
+        studentList.add(new Student(2, "Bang", 21, "Ha Noi", "images/anh2.jpg"));
+        studentList.add(new Student(3, "Cao", 20, "TP.HCM", "images/anh3.jpg"));
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -79,7 +83,21 @@ public class StudentServlet extends HttpServlet {
         int id = studentList.size() + 1;
         String address = request.getParameter("address");
 
-        Student newStudent = new Student(id, ten, age, address);
+        //handle image upload
+        //get the file part from request
+        Part filePart = request.getPart("image");
+        //get the file name
+        String fileName = getFileName(filePart);
+        //define the upload directory
+        String uploadDirectory = getServletContext().getRealPath("/images");
+        //save the file to upload directory
+        String filePath = uploadFile(filePart, fileName, uploadDirectory);
+        String fileUrl = "images/" + fileName;
+
+        //Create new student
+        Student newStudent = new Student(id, ten, age, address, fileUrl);
+
+        //old code:     Student newStudent = new Student(id, ten, age, address);
         studentList.add(newStudent);
 
         response.sendRedirect("students");
@@ -98,18 +116,42 @@ public class StudentServlet extends HttpServlet {
         int age = Integer.parseInt(request.getParameter("age"));
         String address = request.getParameter("address");
 
-        Student student = getStudentById(id);
-        student.setId(id);
-        student.setTen(ten);
-        student.setAge(age);
-        student.setAddress(address);
+        Student studentUp = getStudentById(id);
+        studentUp.setId(id);
+        studentUp.setTen(ten);
+        studentUp.setAge(age);
+        studentUp.setAddress(address);
+
+        //handle image update
+        Part filePart = request.getPart("image");
+        if (filePart != null && filePart.getSize() > 0) {
+            //delete exist image file
+            deleteImage(studentUp.getImageUrl(), request);
+
+            //save new image, handle image upload
+            //get file part from request
+            String fileName = getFileName(filePart);
+            String uploadDirectory = getServletContext().getRealPath("/images");
+            String filePath = uploadFile(filePart, fileName, uploadDirectory);
+            String fileUrl = "images/" + fileName;
+
+            //upload image URL
+            studentUp.setImageUrl(fileUrl);
+        }
 
         response.sendRedirect("students");
     }
     private void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Student student = getStudentById(id);
-        studentList.remove(student);
+
+        if (student != null) {
+            //delete the associated image file
+            deleteImage(student.getImageUrl(), request);
+
+            //delete student from list or DB
+            studentList.remove(student);
+        }
 
         response.sendRedirect("students");
     }
@@ -133,5 +175,42 @@ public class StudentServlet extends HttpServlet {
         }
         return searchResult;
     }
+
+    private void deleteImage(String imageUrl, HttpServletRequest request) {
+        String uploadDirectory = request.getServletContext().getRealPath("") + File.separator + "images";
+        String imagePath = uploadDirectory + File.separator + imageUrl;
+
+        File imageFile = new File(imagePath);
+        if (imageFile.exists()) {
+            imageFile.delete();
+        }
+    }
+    private String uploadFile(Part filePart, String fileName, String uploadDirectory) throws IOException {
+        String filePath = uploadDirectory + File.separator + fileName;
+
+        try (InputStream inputStream = filePart.getInputStream();
+             FileOutputStream outputStream = new FileOutputStream(filePath)) {
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+        return filePath;
+    }
+
+    private String getFileName(Part part) {
+        String contentDisposition = part.getHeader("content-disposition");
+        String[] elements = contentDisposition.split(";");
+
+        for (String element : elements) {
+            if (element.trim().startsWith("filename")) {
+                return element.substring(element.indexOf("=") + 1).trim().replace("\"","");
+            }
+        }
+        return "";
+    }
+
 }
 

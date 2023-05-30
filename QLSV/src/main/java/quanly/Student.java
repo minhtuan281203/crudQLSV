@@ -5,13 +5,15 @@ public class Student {
     private int id;
     private int age;
     private String address;
+    private String imageUrl;
 
-    public Student(int id, String ten, int age, String address) {
+    public Student(int id, String ten, int age, String address, String imageUrl) {
         super();
         this.id = id;
         this.ten = ten;
         this.age = age;
         this.address = address;
+        this.imageUrl = imageUrl;
     }
 
     public int getId() {
@@ -47,5 +49,11 @@ public class Student {
         this.address = address;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

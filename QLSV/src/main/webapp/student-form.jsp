@@ -33,6 +33,12 @@
               <td class="cot1"><label for="address">Address:</label></td>
               <td class="cot1"><input type="text" id="address" name="address"></td>
             </tr>
+
+<%--            add form field--%>
+            <tr>
+              <td class="cot1"><label for="image">Image:</label></td>
+              <td class="cot1"><input type="file" id="image" name="image"></td>
+            </tr>
             <tr>
               <td class="cot1"><input type="submit" class="btn" value="Create"></td>
               <td class="cot1"><a href="students" class="cancel">Cancel</a></td>
@@ -59,6 +65,13 @@
               <td class="cot1"><label for="address2">Address:</label></td>
               <td class="cot1"><input type="text" id="address2" name="address" value="${student.address}"></td>
             </tr>
+
+<%--            add new field--%>
+            <tr>
+              <td class="cot1"><label for="image2">Image:</label></td>
+              <td class="cot1"><input type="file" id="image2" name="image"></td>
+            </tr>
+
             <tr>
               <td class="cot1"><input type="submit" class="btn" value="Update"></td>
               <td class="cot1"><a href="students" class="cancel">Cancel</a></td>

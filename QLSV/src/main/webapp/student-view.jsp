@@ -34,6 +34,7 @@
     <th>Name</th>
     <th>Age</th>
       <th>Address</th>
+      <th>Image</th>
     <th>Action</th>
     </tr>
     <c:forEach var="student" items="${studentList}">
@@ -42,6 +43,10 @@
         <td>${student.ten}</td>
         <td>${student.age}</td>
         <td>${student.address}</td>
+        <td>
+
+            <img src="${student.imageUrl}" alt="Student image" class="image-container">
+        </td>
         <td>
           <a style="text-decoration: none; padding: 10px; background-color: gray; color: #fff; margin-left: 6px;"
              href="students?action=edit&id=${student.id}">
